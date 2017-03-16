@@ -58,7 +58,7 @@ copy_s3 () {
     >&2 echo "Error uploading ${DEST_FILE} on S3"
   else 
     if [ ! -z "${WEB_HOOK}" ]; then
-      curl "${WEB_HOOK}"
+      wget "${WEB_HOOK}" -q
     else 
       >&2 echo "NO WebHook URL provided!"
     fi 
