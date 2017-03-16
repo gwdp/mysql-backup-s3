@@ -40,6 +40,7 @@ fi
 MYSQL_HOST_OPTS="-h $MYSQL_HOST -P $MYSQL_PORT -u$MYSQL_USER -p$MYSQL_PASSWORD"
 DUMP_START_TIME=$(date +"%Y-%m-%dT%H%M%SZ")
 
+
 copy_s3 () {
   SRC_FILE=$1
   DEST_FILE=$2
@@ -58,9 +59,13 @@ copy_s3 () {
     >&2 echo "Error uploading ${DEST_FILE} on S3"
   else 
     if [ ! -z "${WEB_HOOK}" ]; then
-      wget "${WEB_HOOK}" -q
+    
+      # Get ID to server as version marker 
+      CONTAINER_ID=$(awk -F'[:/]' '(($4 == "docker") && (lastId != $NF)) { lastId = $NF; print $NF; }' /proc/self/cgroup)
+      #
+      wget "${WEB_HOOK}" -q --header="User-Agent: mysql-backup-s3/${CONTAINER_ID:0:10}"
     else 
-      >&2 echo "NO WebHook URL provided!"
+      >&2 echo "No webhook provided!"
     fi 
   fi
 
