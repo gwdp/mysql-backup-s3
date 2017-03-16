@@ -20,6 +20,11 @@ curl -L --insecure https://github.com/odise/go-cron/releases/download/v0.0.6/go-
 chmod u+x /usr/local/bin/go-cron
 apk del curl
 
+# let wget work for WEBHOOK
+apk update
+apk add ca-certificates wget
+update-ca-certificates
+
 
 # cleanup
 rm -rf /var/cache/apk/*
